@@ -64,21 +64,33 @@
 
 			function displayTodos() {
 				let todoList = document.getElementById('todo-ul');
-
 				todoList.innerHTML = '';
 
 				for (let i in todos.todoList) {
-					let removeButton = createRemoveButton(i);
-					let toggleButton = createToggleButton(i);
-					let editButton = createEditButton(i);
+					let removeButton = createRemoveButton();
+					let toggleButton = createToggleButton();
+					let editButton = createEditButton();
 					let li = createListItem(i);
-
+					li.id = `todo-${i}`;
 					li.appendChild(toggleButton);
 					li.appendChild(editButton);
 					li.appendChild(removeButton);
 					todoList.appendChild(li);
 				}
 			}
+
+			const list = document.getElementById('todo-ul');
+			list.addEventListener('click', (e) => {
+				e.preventDefault();
+				let position = e.target.parentNode.id.split('-')[1];
+				if (e.target.innerText === 'Toggle') {
+					toggleTodo(position);
+				} else if (e.target.innerText === 'Edit') {
+					editTodo(position);
+				} else if (e.target.innerText === 'Remove') {
+					removeTodo(position);
+				}
+			});
 
 			function createListItem(index) {
 				let li = document.createElement('li');
@@ -91,40 +103,35 @@
 				return li;
 			}
 
-			function createEditButton(index) {
+			function createEditButton() {
 				let editButton = document.createElement('button');
-				editButton.value = index;
 				editButton.innerText = 'Edit';
-				editButton.addEventListener('click', (e) => {
-					const oldText = todos.todoList[index].todoText;
-					const newText = window.prompt('Change the old text:', oldText);
-					if (newText) {
-						todos.edit(e.target.value, newText);
-						displayTodos();
-					}
-				});
-
 				return editButton;
 			}
 
-			function createToggleButton(index) {
+			function editTodo(position) {
+				const oldText = todos.todoList[position].todoText;
+				const newText = window.prompt('Change the old text:', oldText);
+				if (newText) {
+					todos.edit(position, newText);
+					displayTodos();
+				}
+			}
+
+			function createToggleButton() {
 				let toggleButton = document.createElement('button');
-				toggleButton.value = index;
 				toggleButton.innerText = 'Toggle';
-				toggleButton.addEventListener('click', toggleTodo);
 				return toggleButton;
 			}
 
-			function createRemoveButton(index) {
+			function createRemoveButton() {
 				let removeButton = document.createElement('button');
-				removeButton.value = index;
 				removeButton.innerText = 'Remove';
-				removeButton.addEventListener('click', removeTodo);
 				return removeButton;
 			}
 
-			function toggleTodo(e) {
-				todos.toggle(e.currentTarget.value);
+			function toggleTodo(position) {
+				todos.toggle(position);
 				displayTodos();
 			}
 
@@ -144,18 +151,6 @@
 				let addInput = document.getElementById('add-input');
 				todos.add(addInput.value);
 				addInput.value = '';
-				displayTodos();
-			});
-
-			let editButton = document.getElementById('edit-button');
-			editButton.addEventListener('click', () => {
-				let editPositionInput = document.getElementById(
-					'edit-position-position'
-				);
-				let editTextInput = document.getElementById('edit-text-position');
-				todos.edit(editPositionInput.value, editTextInput.value);
-				editPositionInput.value = '';
-				editTextInput.value = '';
 				displayTodos();
 			});
 
