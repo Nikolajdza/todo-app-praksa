@@ -7,24 +7,10 @@
 		<button id="toggle-all-button">Toggle all todos</button><br /><br />
 		<button id="add-button">Add</button>
 		<input id="add-input" placeholder="text" /><br /><br />
-		<button id="edit-button">Edit</button>
-		<input id="edit-position-position" placeholder="index" />
-		<input id="edit-text-position" placeholder="text" /><br /><br />
-		<!-- <button id="remove-button">Remove</button>
-		<input id="remove-input" placeholder="index" /><br /><br /> -->
-		<!-- <button id="toggle-button">Toggle</button>
-		<input id="toggle-input" placeholder="index" /> -->
 
 		<ul id="todo-ul"></ul>
 
 		<script>
-			//* DOMACI
-			//*
-			//* ukloniti value sa button-a
-			//* staviti na list itemu id (id="todo-0",id="todo-1"...)
-			//*
-			//*
-
 			const todos = {
 				todoList: [
 					{ todoText: 'Item 1', completed: false },
@@ -65,36 +51,63 @@
 			function displayTodos() {
 				let todoList = document.getElementById('todo-ul');
 				todoList.innerHTML = '';
-
-				for (let i in todos.todoList) {
-					let removeButton = createRemoveButton();
-					let toggleButton = createToggleButton();
-					let editButton = createEditButton();
-					let li = createListItem(i);
-					li.id = `todo-${i}`;
+				//
+				for (let index in todos.todoList) {
+					let removeButton = createRemoveButton(index);
+					let toggleButton = createToggleButton(index);
+					let editButton = createEditButton(index);
+					let editInput = createEditInput(index);
+					let li = createListItem(index);
 					li.appendChild(toggleButton);
 					li.appendChild(editButton);
 					li.appendChild(removeButton);
+					li.appendChild(editInput);
 					todoList.appendChild(li);
 				}
+			}
+
+			function createEditInput(index) {
+				const editInput = document.createElement('input');
+				editInput.name = `edit-input`;
+				editInput.placeholder = todos.todoList[index].todoText;
+				editInput.style.display = 'none';
+				return editInput;
 			}
 
 			const list = document.getElementById('todo-ul');
 			list.addEventListener('click', (e) => {
 				e.preventDefault();
-				let position = e.target.parentNode.id.split('-')[1];
-				if (e.target.innerText === 'Toggle') {
-					toggleTodo(position);
-				} else if (e.target.innerText === 'Edit') {
-					editTodo(position);
-				} else if (e.target.innerText === 'Remove') {
-					removeTodo(position);
+
+				if (e.target.name === 'toggle') {
+					toggleTodo(e.target.parentNode.id.split('-')[1]);
+				} else if (e.target.name === 'edit') {
+					const newEdit = e.target.parentNode.lastChild;
+					newEdit.style.display = 'inline-block';
+					newEdit.addEventListener('keypress', (e) => {
+						if (e.key === 'Enter') {
+							editTodo(
+								newEdit,
+								newEdit.value,
+								e.target.parentNode.id.split('-')[1]
+							);
+						}
+					});
+
+					editTodo(
+						newEdit,
+						newEdit.value,
+						e.target.parentNode.id.split('-')[1]
+					);
+				} else if (e.target.name === 'remove') {
+					removeTodo(e.target.parentNode.id.split('-')[1]);
 				}
 			});
 
 			function createListItem(index) {
-				let li = document.createElement('li');
-				let todoText = todos.todoList[index].todoText;
+				const todoId = `todo-`;
+				const li = document.createElement('li');
+				const todoText = todos.todoList[index].todoText;
+				li.id = `${todoId}${index}`;
 				li.innerText =
 					(todos.todoList[index].completed ? '✅' : '❌') +
 					' ' +
@@ -103,29 +116,32 @@
 				return li;
 			}
 
-			function createEditButton() {
-				let editButton = document.createElement('button');
+			function createEditButton(index) {
+				const editButton = document.createElement('button');
+				editButton.name = `edit`;
 				editButton.innerText = 'Edit';
 				return editButton;
 			}
 
-			function editTodo(position) {
-				const oldText = todos.todoList[position].todoText;
-				const newText = window.prompt('Change the old text:', oldText);
+			function editTodo(element, newText, position) {
+				// const oldText = todos.todoList[position].todoText;
+				// const newText = window.prompt('Change the old text:', oldText);
 				if (newText) {
 					todos.edit(position, newText);
 					displayTodos();
 				}
 			}
 
-			function createToggleButton() {
-				let toggleButton = document.createElement('button');
+			function createToggleButton(index) {
+				const toggleButton = document.createElement('button');
+				toggleButton.name = `toggle`;
 				toggleButton.innerText = 'Toggle';
 				return toggleButton;
 			}
 
-			function createRemoveButton() {
-				let removeButton = document.createElement('button');
+			function createRemoveButton(index) {
+				const removeButton = document.createElement('button');
+				removeButton.name = `remove`;
 				removeButton.innerText = 'Remove';
 				return removeButton;
 			}
