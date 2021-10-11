@@ -2,175 +2,27 @@
 <html>
 	<head>
 		<title>Practical JavaScript</title>
+
+		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<button id="toggle-all-button">Toggle all todos</button><br /><br />
-		<button id="add-button">Add</button>
-		<input id="add-input" placeholder="text" /><br /><br />
+		<header>
+			<h1>todos</h1>
+		</header>
 
-		<ul id="todo-ul"></ul>
+		<div class="container">
+			<div class="todo-input">
+				<button id="toggle-all-button">🔽</button>
+				<!-- <button id="add-button">Add</button> -->
+				<input
+					id="add-input"
+					type="text"
+					placeholder="What needs to be done?"
+				/>
+			</div>
+			<ul id="todo-ul"></ul>
+		</div>
 
-		<script>
-			const todos = {
-				todoList: [
-					{ todoText: 'Item 1', completed: false },
-					{ todoText: 'Item 2', completed: false },
-					{ todoText: 'Item 3', completed: false },
-				],
-				add(text) {
-					this.todoList.push({ todoText: text, completed: false });
-				},
-				edit(position, text) {
-					this.todoList[position].todoText = text;
-				},
-				remove(position) {
-					this.todoList.splice(position, 1);
-				},
-				toggle(position) {
-					this.todoList[position].completed =
-						!this.todoList[position].completed;
-				},
-				allTrue() {
-					for (let i = 0; i < this.todoList.length; i++) {
-						if (!this.todoList[i].completed) {
-							return false;
-						}
-					}
-					return true;
-				},
-				toggleAll() {
-					let toggleTo = !this.allTrue();
-					for (let i = 0; i < this.todoList.length; i++) {
-						this.todoList[i].completed = toggleTo;
-					}
-				},
-			};
-
-			displayTodos();
-
-			function displayTodos() {
-				let todoList = document.getElementById('todo-ul');
-				todoList.innerHTML = '';
-				//
-				for (let index in todos.todoList) {
-					let removeButton = createRemoveButton(index);
-					let toggleButton = createToggleButton(index);
-					let editButton = createEditButton(index);
-					let editInput = createEditInput(index);
-					let li = createListItem(index);
-					li.appendChild(toggleButton);
-					li.appendChild(editButton);
-					li.appendChild(removeButton);
-					li.appendChild(editInput);
-					todoList.appendChild(li);
-				}
-			}
-
-			function createEditInput(index) {
-				const editInput = document.createElement('input');
-				editInput.name = `edit-input`;
-				editInput.placeholder = todos.todoList[index].todoText;
-				editInput.style.display = 'none';
-				return editInput;
-			}
-
-			const list = document.getElementById('todo-ul');
-			list.addEventListener('click', (e) => {
-				e.preventDefault();
-
-				if (e.target.name === 'toggle') {
-					toggleTodo(e.target.parentNode.id.split('-')[1]);
-				} else if (e.target.name === 'edit') {
-					const newEdit = e.target.parentNode.lastChild;
-					newEdit.style.display = 'inline-block';
-					newEdit.addEventListener('keypress', (e) => {
-						if (e.key === 'Enter') {
-							editTodo(
-								newEdit,
-								newEdit.value,
-								e.target.parentNode.id.split('-')[1]
-							);
-						}
-					});
-
-					editTodo(
-						newEdit,
-						newEdit.value,
-						e.target.parentNode.id.split('-')[1]
-					);
-				} else if (e.target.name === 'remove') {
-					removeTodo(e.target.parentNode.id.split('-')[1]);
-				}
-			});
-
-			function createListItem(index) {
-				const todoId = `todo-`;
-				const li = document.createElement('li');
-				const todoText = todos.todoList[index].todoText;
-				li.id = `${todoId}${index}`;
-				li.innerText =
-					(todos.todoList[index].completed ? '✅' : '❌') +
-					' ' +
-					todoText +
-					' ';
-				return li;
-			}
-
-			function createEditButton(index) {
-				const editButton = document.createElement('button');
-				editButton.name = `edit`;
-				editButton.innerText = 'Edit';
-				return editButton;
-			}
-
-			function editTodo(element, newText, position) {
-				// const oldText = todos.todoList[position].todoText;
-				// const newText = window.prompt('Change the old text:', oldText);
-				if (newText) {
-					todos.edit(position, newText);
-					displayTodos();
-				}
-			}
-
-			function createToggleButton(index) {
-				const toggleButton = document.createElement('button');
-				toggleButton.name = `toggle`;
-				toggleButton.innerText = 'Toggle';
-				return toggleButton;
-			}
-
-			function createRemoveButton(index) {
-				const removeButton = document.createElement('button');
-				removeButton.name = `remove`;
-				removeButton.innerText = 'Remove';
-				return removeButton;
-			}
-
-			function toggleTodo(position) {
-				todos.toggle(position);
-				displayTodos();
-			}
-
-			function removeTodo(position) {
-				todos.remove(position);
-				displayTodos();
-			}
-
-			let toggleAllButton = document.getElementById('toggle-all-button');
-			toggleAllButton.addEventListener('click', () => {
-				todos.toggleAll();
-				displayTodos();
-			});
-
-			let addButton = document.getElementById('add-button');
-			addButton.addEventListener('click', () => {
-				let addInput = document.getElementById('add-input');
-				todos.add(addInput.value);
-				addInput.value = '';
-				displayTodos();
-			});
-
-			let toggleButton = document.getElementById('toggle-button');
-		</script>
+		<script src="script.js"></script>
 	</body>
 </html>

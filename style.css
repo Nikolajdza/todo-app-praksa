@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 30px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  font-size: 4rem;
+}
+
+li {
+  list-style: none;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  border: 1px solid black;
+}
+.container button {
+  border: none;
+  background-color: #fff;
+}
+.container .todo-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+}
+.container .todo-input input {
+  width: 550px;
+  border: none;
+}
+.container .todo-input input:focus {
+  outline: none;
+}
+.container ul {
+  width: 100%;
+}
+.container ul li {
+  border: 1px solid black;
+}
+.container ul li input {
+  width: 500px;
+  border: none;
+}
+.container ul li input:focus {
+  outline: none;
+}
+
+/*# sourceMappingURL=style.css.map */
